@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -22,8 +23,8 @@ public class UsersController {
     public ResponseEntity<List<User>> fetchAllUsers() {
         logger.info("\n===================== Received a request to fetch all users from the database ====================");
         List<User> users = List.of(
-                new User(1L,"benson", "opisa", "benspnopisa@gmail.com", null, 2L ),
-                new User(2L, "jeremy", "doku", "jeremy.doku@gmancity.com",null,3L)
+                new User(1L,"benson", "opisa", "benspnopisa@gmail.com", null, 2L, Collections.emptySet()),
+                new User(2L, "jeremy", "doku", "jeremy.doku@gmancity.com",null,3L, Collections.emptySet())
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(users);
