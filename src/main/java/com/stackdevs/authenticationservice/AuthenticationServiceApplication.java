@@ -28,9 +28,9 @@ public class AuthenticationServiceApplication {
 										PermissionRepository permissionRepository,
 										PasswordEncoder passwordEncoder) {
 		return args -> {
-			Permission viewUsers =new  Permission("view users");
-			Permission createUser = new Permission("create users");
-			Permission disableUsers  = new Permission("disable users");
+			Permission viewUsers =new  Permission("view_users");
+			Permission createUser = new Permission("create_users");
+			Permission disableUsers  = new Permission("disable_users");
 
 			permissionRepository.saveAll(Set.of(viewUsers, createUser, disableUsers));
 
