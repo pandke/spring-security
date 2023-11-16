@@ -3,27 +3,29 @@ package com.stackdevs.authenticationservice.models.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
-import java.io.Serializable;
-import java.util.ArrayList;
+import java.time.ZonedDateTime;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class User implements Serializable, UserDetails {
+public class User extends BaseModel implements UserDetails {
     @Serial
     private static final long serialVersionUID = 1000L;
     @Id
@@ -38,6 +40,7 @@ public class User implements Serializable, UserDetails {
     private String lastName;
 
     @Column(name = "email", unique = true)
+    @Email(message = "Please use a valid email")
     private String email;
 
     @JsonIgnore
@@ -47,6 +50,23 @@ public class User implements Serializable, UserDetails {
     @Column(name = "department_id")
     private long departmentId;
 
+    @ManyToOne(targetEntity = Department.class, fetch = FetchType.LAZY)
+    @JoinColumn(name="department_id", referencedColumnName = "department_id", insertable = false, updatable = false)
+    private Department department;
+
+    @Column(name = "mobile_number")
+    @Size(min = 10, max=12)
+    @JsonProperty("mobile_number")
+    private String phoneNumber;
+
+    @Column(name = "user_enabled", length = 1)
+    @JsonProperty("is_enabled")
+    private byte user_enabled;
+
+    @JsonProperty("updated_by")
+    @Column(name = "last_password_change_date")
+    private ZonedDateTime lastPasswordChangeDate;       // for tracking password expiry
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
@@ -54,16 +74,6 @@ public class User implements Serializable, UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id")
     )
     private Set<Role> roles;
-
-    public User(String firstName, String lastName, String email, String password, long departmentId, Set<Role> roles) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.departmentId = departmentId;
-        this.roles = roles;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.getRoles()
@@ -101,6 +111,6 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user_enabled == (byte)1;
     }
 }
