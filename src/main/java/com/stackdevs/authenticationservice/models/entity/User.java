@@ -66,13 +66,12 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return new ArrayList<>(this.getRoles()
+        return this.getRoles()
                 .parallelStream()
                 .flatMap(r -> r.getPermissions().stream()) // Use stream here to avoid nested parallel streams
                 .map(Permission::getName)
-                .distinct()
                 .map(SimpleGrantedAuthority::new)
-                .toList());
+                .collect(Collectors.toSet());
     }
 
     @Override

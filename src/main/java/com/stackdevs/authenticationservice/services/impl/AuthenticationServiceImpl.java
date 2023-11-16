@@ -2,7 +2,7 @@ package com.stackdevs.authenticationservice.services.impl;
 
 import com.stackdevs.authenticationservice.controllers.AuthenticationController;
 import com.stackdevs.authenticationservice.models.dto.response.LoginResponseDTO;
-import com.stackdevs.authenticationservice.security.JwtUtil;
+import com.stackdevs.authenticationservice.security.jwtutils.JwtTokenGenerator;
 import com.stackdevs.authenticationservice.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -19,7 +19,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
     private final AuthenticationManager authenticationManager;
 
-    private final JwtUtil jwtUtil;
+    private final JwtTokenGenerator jwtUtil;
 
     @Override
     public LoginResponseDTO authenticate(UsernamePasswordAuthenticationToken authenticationRequest) throws AuthenticationException {

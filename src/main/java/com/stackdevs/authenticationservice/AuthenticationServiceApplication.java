@@ -28,9 +28,9 @@ public class AuthenticationServiceApplication {
 										PermissionRepository permissionRepository,
 										PasswordEncoder passwordEncoder) {
 		return args -> {
-			Permission viewUsers =new  Permission("view_users");
-			Permission createUser = new Permission("create_users");
-			Permission disableUsers  = new Permission("disable_users");
+			Permission viewUsers =new  Permission("view_user");
+			Permission createUser = new Permission("create_user");
+			Permission disableUsers  = new Permission("disable_user");
 
 			permissionRepository.saveAll(Set.of(viewUsers, createUser, disableUsers));
 
@@ -39,9 +39,9 @@ public class AuthenticationServiceApplication {
 			roleAdmin.setPermissions(Set.of(viewUsers,createUser, disableUsers));
 
 			Role roleUser = new Role("USER");
-			roleUser.setPermissions(Set.of(viewUsers));
+			roleUser.setPermissions(Set.of(createUser));
 
-			Set<Role> roles = Set.of(roleAdmin, roleUser);
+			Set<Role> roles = Set.of(roleUser);
 
 			if (roleRepository.count() != 2) {
 				roleRepository.saveAll(roles);

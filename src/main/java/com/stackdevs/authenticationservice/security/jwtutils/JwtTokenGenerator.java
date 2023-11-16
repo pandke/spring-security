@@ -1,4 +1,4 @@
-package com.stackdevs.authenticationservice.security;
+package com.stackdevs.authenticationservice.security.jwtutils;
 
 import com.stackdevs.authenticationservice.models.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -12,13 +12,14 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class JwtUtil {
+public class JwtTokenGenerator {
 
     private final JwtEncoder jwtEncoder;
 
@@ -33,9 +34,9 @@ public class JwtUtil {
     protected static Map<String, Object> getClaims(Authentication authentication) {
         Map<String, Object> claims = new HashMap<>();
 
-        String scope = authentication.getAuthorities().stream()
+        List<String> scope = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
+                .collect(Collectors.toList());
 
         User user = (User) authentication.getPrincipal();
 
@@ -51,7 +52,7 @@ public class JwtUtil {
     protected JwtClaimsSet buildJwtClaims(Map<String, Object> customClaims, String subject) {
         Instant now = Instant.now();
 
-        Instant expirationTime = now.plusSeconds(3600);
+        Instant expirationTime = now.plusSeconds(3600);     // expire in 1 hour
 
         JwtClaimsSet.Builder claimsBuilder = JwtClaimsSet.builder()
                 .issuer("self")
